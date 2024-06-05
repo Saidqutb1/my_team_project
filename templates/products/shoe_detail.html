@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ shoe.name }} - Shoe Detail
+{% endblock %}
+
+{% block content %}
+<h1>{{ shoe.name }}</h1>
+<img src="{{ shoe.image.url }}" alt="{{ shoe.name }}">
+<p>Category: {{ shoe.category }}</p>
+<p>Type: {{ shoe.type }}</p>
+<p>Made Company: {{ shoe.made_company }}</p>
+<p>Made Country: {{ shoe.made_country }}</p>
+<p>Color: {{ shoe.color }}</p>
+<p>Size: {{ shoe.size }}</p>
+<p>Price: {{ shoe.price }}</p>
+<p>Lather: {{ shoe.lather }}</p>
+<p>Season: {{ shoe.season }}</p>
+
+
+<h2>Reviews</h2>
+<a href="{% url 'products:add_review' shoe.pk %}">Add Review</a>
+
+{% for review in reviews %}
+<div class="review">
+    <h4>{{ review.user.username }} | Rating: {{ review.rating }}</h4>
+    <p>{{ review.comment }}</p>
+    {% if user.is_authenticated and review.user == user %}
+    <form method="post" action="{% url 'products:review_delete' review.pk %}">
+        {% csrf_token %}
+        <button type="submit">Delete</button>
+    </form>
+    <button><a href="{% url 'products:review_update' review.pk  %}">Update</a></button>
+    {% endif %}
+</div>
+{% empty %}
+<p class="no-reviews">No reviews yet.</p>
+{% endfor %}
+
+{% endblock %}
+
+

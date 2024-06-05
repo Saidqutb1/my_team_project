@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}All Shoes{% endblock %}
+
+{% block content %}
+<h1>All Shoes</h1>
+
+<a href="{% url 'products:createshoe' %}" class="btn btn-primary">Create New Shoe</a>
+
+{% if shoes %}
+<ul>
+    {% for shoe in shoes %}
+    <li>
+        <img src="{{ shoe.image.url }}" alt="{{ shoe.name }}" style="width: 100px; height: 100px;">
+        <a href="{% url 'products:shoe_detail' shoe.pk %}">{{ shoe.name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No shoes available.</p>
+{% endif %}
+
+{% endblock %}
