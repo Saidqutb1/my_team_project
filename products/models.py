@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from users.models import Painting
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -100,7 +101,7 @@ class Shoes(models.Model):
 
 
 class Review(models.Model):
-    user = models.ForeignKey(Painting, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     shoe = models.ForeignKey(Shoes, on_delete=models.CASCADE)
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -116,4 +117,4 @@ class Review(models.Model):
         db_table = 'review'
 
     def __str__(self):
-        return f"Review by {self.user} for {self.shoe}"
+        return f"Review by {self.user.username} for {self.shoe}"

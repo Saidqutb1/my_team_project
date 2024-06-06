@@ -26,11 +26,11 @@
     <h4>{{ review.user.username }} | Rating: {{ review.rating }}</h4>
     <p>{{ review.comment }}</p>
     {% if user.is_authenticated and review.user == user %}
-    <form method="post" action="{% url 'products:review_delete' review.pk %}">
+    <form method="post" action="{% url 'products:delete_review' review.pk %}">
         {% csrf_token %}
         <button type="submit">Delete</button>
     </form>
-    <button><a href="{% url 'products:review_update' review.pk  %}">Update</a></button>
+    <button><a href="{% url 'products:update_review' review.pk  %}">Update</a></button>
     {% endif %}
 </div>
 {% empty %}

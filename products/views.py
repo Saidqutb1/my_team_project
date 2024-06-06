@@ -36,7 +36,8 @@ class ShoesListView1(ListView):
 class ShoesDetailView(View):
     def get(self, request, pk):
         shoe = get_object_or_404(Shoes, pk=pk)
-        return render(request, 'products/shoe_detail.html', {'shoe': shoe})
+        reviews = Review.objects.filter(shoe=shoe)
+        return render(request, 'products/shoe_detail.html', {'shoe': shoe, 'reviews': reviews})
 
 
 class CreateShoeView(View):
@@ -100,7 +101,7 @@ class AddReviewView(LoginRequiredMixin, View):
         if add_review_form.is_valid():
             review = add_review_form.save(commit=False)
             review.shoe = shoe
-            review.user = request.users.painting
+            review.user = request.user.painting_set.first()
             review.save()
             messages.success(request, "Your review was added successfully!")
             return redirect('products:shoe_detail', pk=pk)
@@ -113,24 +114,33 @@ class ReviewDeleteView(View):
     def post(self, request, pk):
         review = get_object_or_404(Review, pk=pk)
         shoe_pk = review.shoe.pk
-        review.delete()
-        messages.success(request, "Your review was deleted successfully!")
-        return redirect('shoes_detail', pk=shoe_pk)
+        if review.user == request.user or request.user.is_staff:
+            review.delete()
+            messages.success(request, "Your review was deleted successfully!")
+        else:
+            messages.error(request, "You do not have permission to delete this review.")
+        return redirect('products:shoe_detail', pk=shoe_pk)
 
 
 class ReviewUpdateView(View):
     def get(self, request, pk):
         review = get_object_or_404(Review, pk=pk)
+        if review.user != request.user and not request.user.is_staff:
+            messages.error(request, "You do not have permission to update this review.")
+            return redirect('products:shoe_detail', pk=review.shoe.pk)
         update_form = UpdateReviewForm(instance=review)
         return render(request, 'products/update_review.html', {'form': update_form})
 
     def post(self, request, pk):
         review = get_object_or_404(Review, pk=pk)
+        if review.user != request.user and not request.user.is_staff:
+            messages.error(request, "You do not have permission to update this review.")
+            return redirect('products:shoe_detail', pk=review.shoe.pk)
         update_form = UpdateReviewForm(request.POST, instance=review)
         if update_form.is_valid():
             update_form.save()
             messages.success(request, "Your review was updated successfully!")
-            return redirect('shoes_detail', pk=review.shoe.pk)
+            return redirect('products:shoe_detail', pk=review.shoe.pk)
         else:
             messages.error(request, "Failed to update your review.")
             return render(request, 'products/update_review.html', {'form': update_form})
