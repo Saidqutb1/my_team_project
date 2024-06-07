@@ -10,6 +10,7 @@ from .views import (
     ReviewDeleteView,
     ReviewUpdateView,
     CreateShoeView,
+    SearchView,
 )
 
 app_name = 'products'
@@ -25,5 +26,6 @@ urlpatterns = [
     path('review/<int:pk>/delete/', ReviewDeleteView.as_view(), name='delete_review'),
     path('review/<int:pk>/update/', ReviewUpdateView.as_view(), name='update_review'),
     path('products/create/', CreateShoeView.as_view(), name='createshoe'),
+    path('search/', SearchView.as_view(), name='search')
 
 ]

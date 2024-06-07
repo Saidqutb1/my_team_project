@@ -3,6 +3,8 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, PaintingForm
 from .models import Painting
+
+
 # Create your views here.
 
 
@@ -66,22 +68,3 @@ def upload_painting(request):
 def my_paintings(request):
     paintings = Painting.objects.filter(user=request.user)
     return render(request, 'users/my_paintings.html', {'paintings': paintings})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

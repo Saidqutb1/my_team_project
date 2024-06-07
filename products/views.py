@@ -101,7 +101,7 @@ class AddReviewView(LoginRequiredMixin, View):
         if add_review_form.is_valid():
             review = add_review_form.save(commit=False)
             review.shoe = shoe
-            review.user = request.user.painting_set.first()
+            review.user = request.user
             review.save()
             messages.success(request, "Your review was added successfully!")
             return redirect('products:shoe_detail', pk=pk)
@@ -144,3 +144,13 @@ class ReviewUpdateView(View):
         else:
             messages.error(request, "Failed to update your review.")
             return render(request, 'products/update_review.html', {'form': update_form})
+
+
+class SearchView(View):
+    def get(self, request):
+        query = request.GET.get('q')
+        shoes_results = Shoes.objects.filter(name__icontains=query)
+        return render(request, 'products/search_results.html', {
+            'query': query,
+            'shoes_results': shoes_results,
+        })

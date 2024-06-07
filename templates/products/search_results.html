@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}
+Search "{{ query }}"
+{% endblock %}
+
+{% block content %}
+<h1>Search results for "{{ query }}"</h1>
+
+<div class="search-results">
+    <h2>Shoes</h2>
+    <div class="shoes-results">
+        {% for shoe in shoes_results %}
+        <div class="shoe-result">
+            <a href="{% url 'products:shoe_detail' shoe.pk %}">
+                <img src="{{ shoe.image.url }}" alt="{{ shoe.name }}">
+                <p>{{ shoe.name }}</p>
+            </a>
+            <p>Price: {{ shoe.price }}</p>
+        </div>
+        {% endfor %}
+        {% if not shoes_results %}
+        <p>No results.</p>
+        {% endif %}
+    </div>
+
+
+</div>
+
+{% endblock %}
