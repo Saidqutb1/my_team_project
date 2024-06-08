@@ -57,6 +57,7 @@
         <input type="text" name="q" placeholder="Search...">
         <button type="submit">Search</button>
     </form>
+    <li><a href="{% url 'products:filter' %}">Filter</a></li>
     <li><a href="{% url 'products:shoes_list' %}">Shoes</a></li>
     <li><a href="{% url 'products:category_products' %}">Categories</a></li>
     {% else %}

@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic import ListView
 from .models import *
-from .forms import AddReviewForm, UpdateReviewForm, ShoesForm
+from .forms import AddReviewForm, UpdateReviewForm, ShoesForm, FilterForm
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -12,17 +12,18 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.db.models import Q
 from .models import Shoes, User
 
+
 # Create your views here.
 
 
 class CategoryProductsListView(View):
     def get(self, request):
         categories = CategoryProducts.objects.all()
-        return render(request, 'category_products.html', {'categories': categories})
+        return render(request, 'products/category_products.html', {'categories': categories})
 
 
 class ShoesListView(View):
-    def get(self, request):
+    def get(self, request, category_id):
         category = get_object_or_404(CategoryProducts, pk=category_id)
         shoes = Shoes.objects.filter(category=category)
         return render(request, 'products/shoes.html', {'shoes': shoes})
@@ -164,3 +165,47 @@ class SearchView(View):
         })
 
 
+class FilterView(View):
+    def get(self, request):
+        filter_form = FilterForm(request.GET)
+        if filter_form.is_valid():
+            filtered_shoes = self.get_filtered_shoes(filter_form.cleaned_data)
+            return render(request, 'products/filter_results.html', {'shoes': filtered_shoes})
+        else:
+            return render(request, 'products/filter.html', {'filter_form': filter_form})
+
+    def get_filtered_shoes(self, filter_data):
+        category = filter_data.get('category')
+        size = filter_data.get('size')
+        type = filter_data.get('type')
+        color = filter_data.get('color')
+        made_company = filter_data.get('made_company')
+        made_country = filter_data.get('made_country')
+        lather = filter_data.get('lather')
+        season = filter_data.get('season')
+        price_min = filter_data.get('price_min')
+        price_max = filter_data.get('price_max')
+
+        filtered_shoes = Shoes.objects.all()
+        if category:
+            filtered_shoes = filtered_shoes.filter(category=category)
+        if size:
+            filtered_shoes = filtered_shoes.filter(size=size)
+        if type:
+            filtered_shoes = filtered_shoes.filter(type=type)
+        if color:
+            filtered_shoes = filtered_shoes.filter(color=color)
+        if made_company:
+            filtered_shoes = filtered_shoes.filter(made_company=made_company)
+        if made_country:
+            filtered_shoes = filtered_shoes.filter(made_country=made_country)
+        if lather:
+            filtered_shoes = filtered_shoes.filter(lather=lather)
+        if season:
+            filtered_shoes = filtered_shoes.filter(season=season)
+        if price_min:
+            filtered_shoes = filtered_shoes.filter(price__gte=price_min)
+        if price_max:
+            filtered_shoes = filtered_shoes.filter(price__lte=price_max)
+
+        return filtered_shoes
