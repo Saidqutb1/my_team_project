@@ -9,7 +9,8 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-
+from django.db.models import Q
+from .models import Shoes, User
 
 # Create your views here.
 
@@ -149,8 +150,17 @@ class ReviewUpdateView(View):
 class SearchView(View):
     def get(self, request):
         query = request.GET.get('q')
-        shoes_results = Shoes.objects.filter(name__icontains=query)
+        shoes_results = Shoes.objects.filter(
+            Q(name__icontains=query) |
+            Q(category__name__icontains=query) |
+            Q(type__name__icontains=query) |
+            Q(size__name__icontains=query)
+        )
+        users_results = User.objects.filter(username__icontains=query)
         return render(request, 'products/search_results.html', {
             'query': query,
             'shoes_results': shoes_results,
+            'users_results': users_results,
         })
+
+

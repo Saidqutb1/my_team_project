@@ -1,8 +1,11 @@
-from django.shortcuts import render, redirect
+from django.http import HttpResponseForbidden
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegisterForm, PaintingForm
-from .models import Painting
+from django.views import View
+from django.contrib.auth.models import User
+from .forms import UserRegisterForm, PaintingForm, UserUpdateForm, ProfileUpdateForm
+from .models import Painting, Profile
 
 
 # Create your views here.
@@ -64,7 +67,57 @@ def upload_painting(request):
     return render(request, 'users/upload_painting.html', {'form': form})
 
 
+
+# class UserProfileView(View):
+#     def get(self, request, pk):
+#         user = get_object_or_404(User, pk=pk)
+#         return render(request, 'users/profile.html', {'profile_user': user})
+
+
 @login_required
-def my_paintings(request):
-    paintings = Painting.objects.filter(user=request.user)
-    return render(request, 'users/my_paintings.html', {'paintings': paintings})
+def profile(request, pk):
+    profile_user = get_object_or_404(User, pk=pk)
+    if not hasattr(profile_user, 'profile'):
+        Profile.objects.create(user=profile_user)
+
+    if request.method == "POST":
+        if request.user != profile_user:
+            return HttpResponseForbidden("You are not allowed to edit this profile.")
+
+        u_form = UserUpdateForm(request.POST, instance=profile_user)
+        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=profile_user.profile)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            return redirect('users:profile', pk=profile_user.pk)
+    else:
+        u_form = UserUpdateForm(instance=profile_user)
+        p_form = ProfileUpdateForm(instance=profile_user.profile)
+
+    context = {
+        'u_form': u_form,
+        'p_form': p_form,
+        'profile_user': profile_user
+    }
+
+    return render(request, 'users/profile.html', context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

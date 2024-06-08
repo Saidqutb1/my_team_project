@@ -10,5 +10,5 @@ urlpatterns = [
     path('welcome/', views.welcome, name='welcome'),
     path('logout/', views.logout_view, name='logout'),
     path('upload/', views.upload_painting, name='upload_painting'),
-    path('my_paintings/', views.my_paintings, name='my_paintings'),
+    path('profile/<int:pk>/', views.profile, name='profile'),
 ]
