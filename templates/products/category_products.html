@@ -8,7 +8,7 @@
 <h1>{{ category.name }}</h1>
 <ul>
     {% for category in categories %}
-    <a href="{% url 'products:shoes_by_category' category.pk %}">{{ category.name }}</a>
+    <a href="{% url 'products:shoes_by_category' category.pk %}"style="text-decoration: none; font-size: 15px; background-color: green; border-radius: 10px; color: black; font-family: cursive">{{ category.name }}</a>
     {% endfor %}
 </ul>
 {% endblock %}

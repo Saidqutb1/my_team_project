@@ -9,6 +9,6 @@ Filter Shoes
 <form method="GET" action="{% url 'products:filter' %}">
     {% csrf_token %}
     {{ filter_form.as_p }}
-    <button type="submit">Filter</button>
+    <button type="submit"style="width: 120px; height: 35px; border-radius: 20px; background-color: #4CAF50; border: none;">Filter</button>
 </form>
 {% endblock %}

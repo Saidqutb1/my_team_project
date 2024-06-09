@@ -6,7 +6,7 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">{% if form.instance.pk %}Update{% else %}Create{% endif %}
+        <button type="submit"style="width: 120px; height: 35px; border-radius: 20px; background-color: #4CAF50; border: none;">{% if form.instance.pk %}Update{% else %}Create{% endif %}
         </button>
     </form>
 </div>

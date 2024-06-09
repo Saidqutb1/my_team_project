@@ -5,32 +5,32 @@
 {% endblock %}
 
 {% block content %}
-<h1>{{ shoe.name }}</h1>
+<h1 style="color: green; font-size: 30px; font-family: cursive">{{ shoe.name }}</h1>
 <img src="{{ shoe.image.url }}" alt="{{ shoe.name }}" style="width:200px">
-<p>Category: {{ shoe.category }}</p>
-<p>Type: {{ shoe.type }}</p>
-<p>Made Company: {{ shoe.made_company }}</p>
-<p>Made Country: {{ shoe.made_country }}</p>
-<p>Color: {{ shoe.color }}</p>
-<p>Size: {{ shoe.size }}</p>
-<p>Price: {{ shoe.price }}</p>
-<p>Lather: {{ shoe.lather }}</p>
-<p>Season: {{ shoe.season }}</p>
+<p style="color: green; font-size: 20px; font-family: cursive">Category: {{ shoe.category }}</p>
+<p style="color: green; font-size: 20px; font-family: cursive">Type: {{ shoe.type }}</p>
+<p style="color: green; font-size: 20px; font-family: cursive">Made Company: {{ shoe.made_company }}</p>
+<p style="color: green; font-size: 20px; font-family: cursive">Made Country: {{ shoe.made_country }}</p>
+<p style="color: green; font-size: 20px; font-family: cursive">Color: {{ shoe.color }}</p>
+<p style="color: green; font-size: 20px; font-family: cursive">Size: {{ shoe.size }}</p>
+<p style="color: green; font-size: 20px; font-family: cursive">Price: {{ shoe.price }}</p>
+<p style="color: green; font-size: 20px; font-family: cursive">Lather: {{ shoe.lather }}</p>
+<p style="color: green; font-size: 20px; font-family: cursive">Season: {{ shoe.season }}</p>
 
 
-<h2>Reviews</h2>
-<a href="{% url 'products:add_review' shoe.pk %}">Add Review</a>
+<h2 style="color: black; font-size: 30px; font-family: cursive">Reviews</h2>
+<a href="{% url 'products:add_review' shoe.pk %}"style="font-family: cursive; font-size: 20px;  color: red">Add Review</a>
 
 {% for review in reviews %}
 <div class="review">
-    <h4>{{ review.user.username }} | Rating: {{ review.rating }}</h4>
-    <p>{{ review.comment }}</p>
+    <h4 style="color: green; font-size: 20px; font-family: cursive">{{ review.user.username }} | Rating: {{ review.rating }}</h4>
+    <p style="color: red; font-size: 20px; font-family: cursive">{{ review.comment }}</p>
     {% if user.is_authenticated and review.user == user %}
     <form method="post" action="{% url 'products:delete_review' review.pk %}">
         {% csrf_token %}
-        <button type="submit">Delete</button>
+        <button type="submit" style="width: 120px; height: 35px; border-radius: 20px; background-color: #4CAF50; border: none; margin-bottom: 10px; color: red">Delete</button>
     </form>
-    <button><a href="{% url 'products:update_review' review.pk  %}">Update</a></button>
+    <button style="width: 120px; height: 35px; border-radius: 20px; background-color: #4CAF50; border: none;"><a href="{% url 'products:update_review' review.pk  %} "style="text-decoration: none; color: red">Update</a></button>
     {% endif %}
 </div>
 {% empty %}

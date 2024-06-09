@@ -5,22 +5,22 @@ Search "{{ query }}"
 {% endblock %}
 
 {% block content %}
-<h1>Search results for "{{ query }}"</h1>
+<h1 style="font-size: 30px; font-family: cursive">Search results for "{{ query }}"</h1>
 
 <div class="search-results">
-    <h2>Shoes</h2>
+    <h2 style="font-size: 30px; font-family: cursive">Shoes</h2>
     <div class="shoes-results">
         {% for shoe in shoes_results %}
         <div class="shoe-result">
             <a href="{% url 'products:shoe_detail' shoe.pk %}">
                 <img src="{{ shoe.image.url }}" alt="{{ shoe.name }}" style="width: 150px; height: auto;">
-                <p>{{ shoe.name }}</p>
+                <p style="font-size: 15px; font-family: cursive">{{ shoe.name }}</p>
             </a>
-            <p>Price: {{ shoe.price }}</p>
+            <p style="font-size: 15px; font-family: cursive">Price: {{ shoe.price }}</p>
         </div>
         {% endfor %}
         {% if not shoes_results %}
-        <p>No results.</p>
+        <p style="font-size: 15px; font-family: cursive">No results.</p>
         {% endif %}
     </div>
 
