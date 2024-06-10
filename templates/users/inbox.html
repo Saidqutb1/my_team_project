@@ -2,7 +2,7 @@
 <h2>Inbox</h2>
 {% if chat_messages %}
     {% for sender, messages in chat_messages.items %}
-        <div class="chat" id="chat-{{ sender.username }}">
+        <div class="chat" id="chat-{{ sender.username }}"style="font-family:cursive;">
             <h3>{{ sender.username }}</h3>
             <div class="messages">
                 {% for message in messages %}
@@ -13,7 +13,8 @@
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="hidden" name="recipient_username" value="{{ sender.username }}">
-                <button type="submit">Send</button>
+                <button type="submit"style="width: 120px; height: 35px; border-radius: 20px; background-color: #4CAF50; border: none">Send</button>
+                <button  type="submit"style="width: 120px; height: 35px; border-radius: 20px; background-color: #4CAF50; border: none"><a href="{% url 'users:home'  %}">Back</a></button>
             </form>
         </div>
     {% endfor %}
