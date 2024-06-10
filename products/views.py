@@ -39,7 +39,17 @@ class ShoesDetailView(View):
     def get(self, request, pk):
         shoe = get_object_or_404(Shoes, pk=pk)
         reviews = Review.objects.filter(shoe=shoe)
-        return render(request, 'products/shoe_detail.html', {'shoe': shoe, 'reviews': reviews})
+        # return render(request, 'products/shoe_detail.html', {'shoe': shoe, 'reviews': reviews})
+        recommended_shoes = Shoes.objects.filter(
+            category=shoe.category,
+            type=shoe.type,
+            size=shoe.size
+        ).exclude(pk=pk)[:5]
+        return render(request, 'products/shoe_detail.html', {
+            'shoe': shoe,
+            'reviews': reviews,
+            'recommended_shoes': recommended_shoes
+        })
 
 
 class CreateShoeView(View):
