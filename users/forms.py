@@ -30,16 +30,11 @@ class ProfileUpdateForm(forms.ModelForm):
         fields = ['image']
 
 
-class ProfileUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ['image']
 
 class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
-        fields = ['recipient', 'content']
-
+        fields = ['content']
 
 
 

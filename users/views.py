@@ -4,9 +4,9 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.contrib.auth.models import User
-from .forms import UserRegisterForm, PaintingForm, UserUpdateForm, ProfileUpdateForm
-from .models import Painting, Profile
-
+from .forms import UserRegisterForm, PaintingForm, UserUpdateForm, ProfileUpdateForm, MessageForm
+from .models import Painting, Profile, Notification, Message
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -102,6 +102,55 @@ def profile(request, pk):
 
     return render(request, 'users/profile.html', context)
 
+
+@login_required
+def inbox(request):
+    user_chats = Message.objects.filter(recipient=request.user).values('sender').distinct()
+    chat_messages = {}
+    for chat in user_chats:
+        sender_id = chat['sender']
+        sender = User.objects.get(id=sender_id)
+        messages = Message.objects.filter(sender=sender, recipient=request.user)
+        chat_messages[sender] = messages
+
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = request.user
+            recipient = User.objects.get(username=request.POST.get('recipient_username'))
+            message.recipient = recipient
+            message.save()
+            Notification.objects.create(user=message.recipient, message=f'New message from {message.sender.username}')
+            return JsonResponse({'status': 'success', 'message': message.content, 'sender': message.sender.username})
+        else:
+            return JsonResponse({'status': 'error', 'errors': form.errors})
+
+    form = MessageForm()
+    return render(request, 'users/inbox.html', {'chat_messages': chat_messages, 'form': form})
+
+
+
+@login_required
+def send_message(request, recipient_username):
+    recipient = get_object_or_404(User, username=recipient_username)
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = request.user
+            message.recipient = recipient
+            message.save()
+            Notification.objects.create(user=message.recipient, message=f'New message from {message.sender.username}')
+            return redirect('users:inbox')
+    else:
+        form = MessageForm()
+    return render(request, 'users/send_message.html', {'form': form, 'recipient_username': recipient_username})
+
+@login_required
+def notifications(request):
+    notifications = Notification.objects.filter(user=request.user, read=False)
+    return render(request, 'users/notifications.html', {'notifications': notifications})
 
 
 

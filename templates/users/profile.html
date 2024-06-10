@@ -12,6 +12,10 @@ Profile
 <p>Username: {{ profile_user.username }}</p>
 <p>Email: {{ profile_user.email }}</p>
 
+{% if user != profile_user %}
+    <a href="{% url 'users:send_message' recipient_username=profile_user.username %}">Send a Message</a>
+{% endif %}
+
 {% if user == profile_user %}
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
